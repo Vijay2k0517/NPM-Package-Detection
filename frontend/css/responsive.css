@@ -1,0 +1,23 @@
+/* Responsive Adjustments */
+@media (max-width: 900px) {
+  .report-header-grid {
+    grid-template-columns: 1fr;
+  }
+  .top-header, .sub-nav, .main-content {
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+}
+
+@media (max-width: 640px) {
+  .input-row {
+    flex-direction: column;
+  }
+  .stats-grid {
+    grid-template-columns: 1fr;
+  }
+  .page-header {
+    flex-direction: column;
+    gap: 12px;
+  }
+}

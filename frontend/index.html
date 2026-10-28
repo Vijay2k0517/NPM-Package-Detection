@@ -1,0 +1,546 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NPM Shield AI - Malicious Package Detection & Risk Assessment</title>
+  <meta name="description" content="AI-based malicious NPM package detection, dependency risk assessment, and supply chain security analysis.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/static/css/styles.css">
+  <link rel="stylesheet" href="/static/css/layout.css">
+  <link rel="stylesheet" href="/static/css/components.css">
+  <link rel="stylesheet" href="/static/css/responsive.css">
+</head>
+<body>
+  <div class="app-container">
+    <!-- Top Header -->
+    <header class="top-header">
+      <div class="brand-wrapper">
+        <div class="brand-icon">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+            <path d="m9 12 2 2 4-4"/>
+          </svg>
+        </div>
+        <span class="brand-title">NPM Shield AI</span>
+        <span class="brand-tag">Security SaaS</span>
+      </div>
+
+      <div class="top-actions">
+        <div class="system-status">
+          <span class="status-indicator" id="topStatusDot"></span>
+          <span id="topStatusText">Backend Connected</span>
+        </div>
+        <button class="btn btn-primary btn-sm" onclick="navigateTo('scanner')">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="12" y1="5" x2="12" y2="19"></line>
+            <line x1="5" y1="12" x2="19" y2="12"></line>
+          </svg>
+          New Scan
+        </button>
+      </div>
+    </header>
+
+    <!-- Sub Navigation Tabs -->
+    <nav class="sub-nav" id="mainNav">
+      <a class="nav-link active" data-view="overview" onclick="navigateTo('overview')">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <rect width="7" height="9" x="3" y="3" rx="1"/>
+          <rect width="7" height="5" x="14" y="3" rx="1"/>
+          <rect width="7" height="9" x="14" y="12" rx="1"/>
+          <rect width="7" height="5" x="3" y="16" rx="1"/>
+        </svg>
+        Security Overview
+      </a>
+      <a class="nav-link" data-view="scanner" onclick="navigateTo('scanner')">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="11" cy="11" r="8"/>
+          <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+        </svg>
+        Package Scanner
+      </a>
+      <a class="nav-link" data-view="report" onclick="navigateTo('report')">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+          <polyline points="14 2 14 8 20 8"/>
+          <line x1="16" y1="13" x2="8" y2="13"/>
+          <line x1="16" y1="17" x2="8" y2="17"/>
+          <polyline points="10 9 9 9 8 9"/>
+        </svg>
+        Analysis Report
+      </a>
+      <a class="nav-link" data-view="dependencies" onclick="navigateTo('dependencies')">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="12" cy="5" r="3"/>
+          <circle cx="6" cy="19" r="3"/>
+          <circle cx="18" cy="19" r="3"/>
+          <line x1="12" y1="8" x2="6" y2="16"/>
+          <line x1="12" y1="8" x2="18" y2="16"/>
+        </svg>
+        Dependency Analysis
+      </a>
+      <a class="nav-link" data-view="history" onclick="navigateTo('history')">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="12" cy="12" r="10"/>
+          <polyline points="12 6 12 12 16 14"/>
+        </svg>
+        Scan History
+      </a>
+      <a class="nav-link" data-view="reports" onclick="navigateTo('reports')">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+          <polyline points="7 10 12 15 17 10"/>
+          <line x1="12" y1="15" x2="12" y2="3"/>
+        </svg>
+        Exports
+      </a>
+      <a class="nav-link" data-view="settings" onclick="navigateTo('settings')">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="12" cy="12" r="3"/>
+          <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+        </svg>
+        Settings
+      </a>
+    </nav>
+
+    <!-- Main Content Area -->
+    <main class="main-content">
+      <!-- VIEW A: Security Overview -->
+      <section id="view-overview" class="view-section active">
+        <div class="page-header">
+          <div>
+            <h1 class="page-title">Security Overview</h1>
+            <p class="page-subtitle">Real-time supply chain security metrics and scan activity from SQLite storage.</p>
+          </div>
+          <button class="btn btn-primary" onclick="navigateTo('scanner')">Run New Scan</button>
+        </div>
+
+        <!-- Metrics Grid -->
+        <div class="stats-grid">
+          <div class="stat-card">
+            <div class="stat-label">Total Scanned Packages</div>
+            <div class="stat-value" id="statTotalScanned">0</div>
+            <div class="stat-desc">Packages & manifests analyzed</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">High / Critical Findings</div>
+            <div class="stat-value" id="statHighRisk" style="color: var(--severity-high);">0</div>
+            <div class="stat-desc">Requiring immediate attention</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">Known Vulnerabilities</div>
+            <div class="stat-value" id="statTotalVulns" style="color: var(--severity-medium);">0</div>
+            <div class="stat-desc">Reported OSV / CVE advisories</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">Clean Packages</div>
+            <div class="stat-value" id="statCleanCount" style="color: var(--severity-low);">0</div>
+            <div class="stat-desc">Zero suspicious indicators detected</div>
+          </div>
+        </div>
+
+        <!-- Risk Distribution Panel -->
+        <div class="card" id="riskDistCard" style="display: none;">
+          <div class="card-title">
+            <span>Risk Score Distribution</span>
+            <span style="font-size: 12px; font-weight: normal; color: var(--text-secondary);">Actual database records</span>
+          </div>
+          <div id="riskDistributionContainer" style="display: flex; gap: 16px; align-items: flex-end; height: 120px; padding-top: 20px;">
+            <!-- Rendered by dashboard.js -->
+          </div>
+        </div>
+
+        <!-- Recent Scans Table -->
+        <div class="card">
+          <div class="card-title">
+            <span>Recent Security Scans</span>
+            <button class="btn btn-secondary btn-sm" onclick="navigateTo('history')">View Full History</button>
+          </div>
+          <div class="table-wrapper">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Package Name</th>
+                  <th>Version</th>
+                  <th>Type</th>
+                  <th>Risk Score</th>
+                  <th>Severity</th>
+                  <th>Findings</th>
+                  <th>Date</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody id="overviewScansTableBody">
+                <tr><td colspan="8" style="text-align: center; color: var(--text-secondary);">Loading scan records...</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- VIEW B: Package Scanner -->
+      <section id="view-scanner" class="view-section">
+        <div class="page-header">
+          <div>
+            <h1 class="page-title">Package & Project Scanner</h1>
+            <p class="page-subtitle">Inspect remote NPM registry packages or audit local project dependency manifests.</p>
+          </div>
+        </div>
+
+        <!-- Mode Toggle -->
+        <div style="display: flex; gap: 8px; margin-bottom: 20px;">
+          <button class="btn btn-primary btn-sm" id="btnSingleMode" onclick="setScanMode('single')">Single Package</button>
+          <button class="btn btn-secondary btn-sm" id="btnProjectMode" onclick="setScanMode('project')">Project Dependencies (Manifest)</button>
+        </div>
+
+        <!-- Single Package Form -->
+        <div class="card" id="singleScanCard">
+          <div class="card-title">Scan Single NPM Package</div>
+          <form id="singleScanForm" onsubmit="handleSingleScan(event)">
+            <div class="input-row" style="margin-bottom: 16px;">
+              <div style="flex: 2;">
+                <label class="form-label" for="inputPackageName">NPM Package Name <span style="color: var(--severity-high);">*</span></label>
+                <input type="text" id="inputPackageName" class="form-input" placeholder="e.g. chalk, lodash, minivlad, @angular/core" required>
+                <div class="input-hint">Supports scoped packages (e.g. <code>@scope/package</code>)</div>
+              </div>
+              <div style="flex: 1;">
+                <label class="form-label" for="inputPackageVersion">Version (Optional)</label>
+                <input type="text" id="inputPackageVersion" class="form-input" placeholder="e.g. 4.18.2 (defaults to latest)">
+                <div class="input-hint">Leave blank for latest release</div>
+              </div>
+            </div>
+
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+              <div style="display: flex; gap: 8px; align-items: center;">
+                <span style="font-size: 13px; color: var(--text-secondary);">Quick Test Samples:</span>
+                <button type="button" class="btn btn-secondary btn-sm" onclick="fillTestPackage('chalk', '')">chalk (clean)</button>
+                <button type="button" class="btn btn-secondary btn-sm" onclick="fillTestPackage('express', '')">express (clean)</button>
+                <button type="button" class="btn btn-secondary btn-sm" onclick="fillTestPackage('minivlad', '')" style="color: var(--severity-high);">minivlad (threat)</button>
+              </div>
+              <button type="submit" id="btnRunSingleScan" class="btn btn-primary">
+                <span id="btnRunSingleText">Analyze Package</span>
+              </button>
+            </div>
+          </form>
+        </div>
+
+        <!-- Project Dependency Form -->
+        <div class="card" id="projectScanCard" style="display: none;">
+          <div class="card-title">Audit Project Manifest / Lockfile</div>
+          <p style="font-size: 13px; color: var(--text-secondary); margin-bottom: 16px;">
+            Upload <code>package.json</code>, <code>package-lock.json</code>, or <code>npm-shrinkwrap.json</code>. 
+            Lockfiles provide exact resolved versions, whereas package.json contains declared dependency ranges.
+          </p>
+
+          <div class="dropzone-box" id="manifestDropzone" onclick="document.getElementById('manifestFileInput').click()">
+            <input type="file" id="manifestFileInput" accept=".json" style="display: none;" onchange="handleManifestFileSelect(event)">
+            <div class="dropzone-title">Click to upload or drag & drop manifest</div>
+            <div class="dropzone-text">package.json, package-lock.json, npm-shrinkwrap.json</div>
+            <div id="fileSelectedDisplay" style="display: none;"></div>
+          </div>
+
+          <div style="margin-top: 20px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+              <label class="form-label" style="margin-bottom: 0;">Or paste manifest JSON content directly:</label>
+              <button type="button" class="btn btn-secondary btn-sm" onclick="loadSampleManifest()">Load Sample Test Manifest</button>
+            </div>
+            <textarea id="rawManifestContent" class="form-input" style="height: 120px; font-family: var(--font-mono); font-size: 12px;" placeholder='{ "dependencies": { "express": "^4.22.2", "minivlad": "*" } }'></textarea>
+          </div>
+
+          <div style="margin-top: 20px; display: flex; justify-content: flex-end;">
+            <button type="button" id="btnRunProjectScan" class="btn btn-primary" onclick="handleProjectScan()">
+              <span id="btnRunProjectText">Audit Dependencies</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- In-progress Banner -->
+        <div class="card" id="scanProgressCard" style="display: none; border-left: 4px solid var(--primary);">
+          <div style="display: flex; align-items: center; gap: 16px;">
+            <div class="status-indicator" style="background-color: var(--primary); animation: pulse 1.5s infinite;"></div>
+            <div>
+              <div style="font-weight: 600;" id="scanProgressTitle">Analysis in progress...</div>
+              <div style="font-size: 13px; color: var(--text-secondary);" id="scanProgressDesc">Contacting NPM Registry and executing static AST heuristics...</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- VIEW C: Security Analysis Report -->
+      <section id="view-report" class="view-section">
+        <div class="page-header">
+          <div>
+            <h1 class="page-title" id="repPkgHeader">Analysis Report</h1>
+            <p class="page-subtitle" id="repMetaSub">Inspection details, evidence, and risk evaluation.</p>
+          </div>
+          <div style="display: flex; gap: 10px;">
+            <button class="btn btn-secondary btn-sm" onclick="rescanCurrentReport()">Rescan</button>
+            <button class="btn btn-secondary btn-sm" onclick="downloadCurrentJson()">Export JSON</button>
+            <button class="btn btn-secondary btn-sm" onclick="downloadCurrentCsv()">Export CSV</button>
+            <button class="btn btn-secondary btn-sm" onclick="window.print()">Print Report</button>
+          </div>
+        </div>
+
+        <!-- Report Overview Grid -->
+        <div class="report-header-grid">
+          <!-- Dial Gauge -->
+          <div class="gauge-box">
+            <svg class="gauge-svg" viewBox="0 0 100 100">
+              <circle class="gauge-bg" cx="50" cy="50" r="40"/>
+              <circle class="gauge-val" id="repGaugeCircle" cx="50" cy="50" r="40" stroke-dasharray="251.2" stroke-dashoffset="251.2" stroke="#15803D"/>
+            </svg>
+            <div class="gauge-center-text">
+              <div class="gauge-num" id="repScoreText">0</div>
+              <div class="gauge-scale">/ 100 RISK</div>
+            </div>
+            <div style="margin-top: 14px;" id="repSeverityBadge">
+              <span class="badge badge-low">LOW RISK</span>
+            </div>
+          </div>
+
+          <!-- Package Details -->
+          <div>
+            <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px;">
+              <div>
+                <h2 style="font-size: 20px; font-weight: 700;" id="repPkgName">package-name</h2>
+                <div style="font-family: var(--font-mono); font-size: 13px; color: var(--text-secondary);" id="repPkgVersion">v1.0.0</div>
+              </div>
+              <span style="font-size: 12px; color: var(--text-secondary);" id="repScanTimestamp">Scan date</span>
+            </div>
+
+            <p style="font-size: 14px; color: var(--text-primary); margin-bottom: 16px;" id="repSummaryText">
+              Summary of findings and security evaluation.
+            </p>
+
+            <!-- Counters row -->
+            <div style="display: flex; gap: 12px; flex-wrap: wrap;">
+              <span class="badge badge-critical" id="badgeCritCount">0 Critical</span>
+              <span class="badge badge-high" id="badgeHighCount">0 High</span>
+              <span class="badge badge-medium" id="badgeMedCount">0 Medium</span>
+              <span class="badge badge-low" id="badgeLowCount">0 Low</span>
+              <span class="badge" style="background: var(--bg-surface-subtle); color: var(--text-secondary); border: 1px solid var(--border-color);" id="badgeTotalFindings">0 Total Findings</span>
+            </div>
+
+            <!-- Score breakdown formula note -->
+            <div style="margin-top: 14px; font-size: 12px; color: var(--text-secondary);" id="repMethodologyNote">
+              Scoring Methodology v1.0.0: Signal combination of known OSV advisories, static YARA heuristics, and behavioral correlation.
+            </div>
+          </div>
+        </div>
+
+        <!-- AI Explanation Section -->
+        <div class="card" style="border-left: 4px solid var(--primary);">
+          <div class="card-title">
+            <span style="display: flex; align-items: center; gap: 8px;">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="m12 3-1.9 5.8a2 2 0 0 1-1.3 1.3L3 12l5.8 1.9a2 2 0 0 1 1.3 1.3L12 21l1.9-5.8a2 2 0 0 1 1.3-1.3L21 12l-5.8-1.9a2 2 0 0 1-1.3-1.3z"/>
+              </svg>
+              AI-Assisted Security Assessment
+            </span>
+            <span style="font-size: 12px; font-weight: normal; color: var(--text-secondary);" id="repAiProviderLabel">Engine: Deterministic Expert System</span>
+          </div>
+          <div id="repAiExplanationText" style="font-size: 13px; line-height: 1.6; color: var(--text-primary); white-space: pre-line;">
+            Analysis explanation will be displayed here.
+          </div>
+          <div style="margin-top: 16px;">
+            <div style="font-size: 13px; font-weight: 600; margin-bottom: 6px;">Recommended Actions:</div>
+            <ul id="repRecommendationsList" style="margin-left: 20px; font-size: 13px; color: var(--text-secondary);"></ul>
+          </div>
+        </div>
+
+        <!-- Findings List -->
+        <div class="card">
+          <div class="card-title">
+            <span>Evidence & Detailed Findings</span>
+            <span style="font-size: 12px; color: var(--text-secondary);">Click finding to expand code snippet</span>
+          </div>
+          <div id="findingsContainer">
+            <!-- Findings populated by report.js -->
+          </div>
+        </div>
+      </section>
+
+      <!-- VIEW D: Dependency Analysis -->
+      <section id="view-dependencies" class="view-section">
+        <div class="page-header">
+          <div>
+            <h1 class="page-title">Dependency Analysis</h1>
+            <p class="page-subtitle">Inspect direct and transitive dependency trees, path chains, and flagged sub-dependencies.</p>
+          </div>
+        </div>
+
+        <!-- Interactive SVG Dependency Graph -->
+        <div class="card">
+          <div class="card-title">
+            <span>Interactive Dependency Graph</span>
+            <span style="font-size: 12px; color: var(--text-secondary);">Visual hierarchy of project dependencies</span>
+          </div>
+          <div class="graph-container">
+            <svg id="dependencySvgGraph" class="graph-svg"></svg>
+          </div>
+        </div>
+
+        <!-- Dependencies Table -->
+        <div class="card">
+          <div class="card-title">Dependency Manifest Table</div>
+          <div class="table-wrapper">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Dependency Name</th>
+                  <th>Resolved Version</th>
+                  <th>Type</th>
+                  <th>Parent</th>
+                  <th>Dependency Path</th>
+                  <th>Risk Level</th>
+                  <th>Findings</th>
+                </tr>
+              </thead>
+              <tbody id="dependenciesTableBody">
+                <tr><td colspan="7" style="text-align: center; color: var(--text-secondary);">No dependencies analyzed yet. Run a scan first.</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- VIEW E: Scan History -->
+      <section id="view-history" class="view-section">
+        <div class="page-header">
+          <div>
+            <h1 class="page-title">Scan History</h1>
+            <p class="page-subtitle">Persistent records of all single package and project manifest scans.</p>
+          </div>
+        </div>
+
+        <div class="card">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; flex-wrap: wrap; gap: 12px;">
+            <div style="display: flex; gap: 10px; align-items: center;">
+              <input type="text" id="historySearchInput" class="form-input" style="width: 240px;" placeholder="Search by package name..." oninput="handleHistoryFilter()">
+              <select id="historySeverityFilter" class="form-input" style="width: 140px;" onchange="handleHistoryFilter()">
+                <option value="all">All Severities</option>
+                <option value="critical">Critical</option>
+                <option value="high">High</option>
+                <option value="medium">Medium</option>
+                <option value="low">Low</option>
+              </select>
+            </div>
+            <button class="btn btn-secondary btn-sm" onclick="loadScanHistory()">Refresh</button>
+          </div>
+
+          <div class="table-wrapper">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Package</th>
+                  <th>Version</th>
+                  <th>Type</th>
+                  <th>Risk Score</th>
+                  <th>Severity</th>
+                  <th>Findings</th>
+                  <th>Date</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="historyTableBody">
+                <tr><td colspan="8" style="text-align: center; color: var(--text-secondary);">Loading history...</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- VIEW F: Reports / Export -->
+      <section id="view-reports" class="view-section">
+        <div class="page-header">
+          <div>
+            <h1 class="page-title">Reports & Exports</h1>
+            <p class="page-subtitle">Download machine-readable JSON and CSV audit records for compliance and pipeline integration.</p>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-title">Available Export Formats</div>
+          <p style="font-size: 13px; color: var(--text-secondary); margin-bottom: 20px;">
+            Select a scan from your history to download its complete evidence report.
+          </p>
+          <div class="form-group" style="max-width: 400px;">
+            <label class="form-label" for="exportScanSelect">Select Scan to Export:</label>
+            <select id="exportScanSelect" class="form-input">
+              <option value="">Loading scans...</option>
+            </select>
+          </div>
+          <div style="display: flex; gap: 12px; margin-top: 16px;">
+            <button class="btn btn-primary" onclick="exportSelectedScan('json')">Download JSON Report</button>
+            <button class="btn btn-secondary" onclick="exportSelectedScan('csv')">Download CSV Table</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- VIEW G: Settings -->
+      <section id="view-settings" class="view-section">
+        <div class="page-header">
+          <div>
+            <h1 class="page-title">Settings & System Info</h1>
+            <p class="page-subtitle">Functional configuration, database status, and security engine options.</p>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-title">System & Backend Status</div>
+          <div class="table-wrapper">
+            <table class="data-table">
+              <tbody>
+                <tr>
+                  <td style="font-weight: 600; width: 240px;">Application</td>
+                  <td>NPM Shield AI v1.0.0</td>
+                </tr>
+                <tr>
+                  <td style="font-weight: 600;">Backend Server</td>
+                  <td id="setBackendStatus">Connected & Operational</td>
+                </tr>
+                <tr>
+                  <td style="font-weight: 600;">Database Engine</td>
+                  <td id="setDbStatus">SQLite (Local persistent file: npm_shield.db)</td>
+                </tr>
+                <tr>
+                  <td style="font-weight: 600;">AI Explanation Provider</td>
+                  <td id="setAiStatus">Deterministic Expert Security Engine</td>
+                </tr>
+                <tr>
+                  <td style="font-weight: 600;">Vulnerability Database</td>
+                  <td>OSV.dev API (Open Source Vulnerabilities)</td>
+                </tr>
+                <tr>
+                  <td style="font-weight: 600;">Dynamic Sandboxing</td>
+                  <td style="color: var(--text-secondary);">Disabled on host OS (Safe static AST & YARA analysis only)</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+      <div><strong>NPM Shield AI</strong> &bull; Evidence-Based Supply Chain Malware Detection</div>
+      <div>Powered by FastAPI & SQLite</div>
+    </footer>
+  </div>
+
+  <!-- Reusable JavaScript Modules -->
+  <script src="/static/js/utils.js"></script>
+  <script src="/static/js/api.js"></script>
+  <script src="/static/js/dashboard.js"></script>
+  <script src="/static/js/scanner.js"></script>
+  <script src="/static/js/report.js"></script>
+  <script src="/static/js/dependencies.js"></script>
+  <script src="/static/js/history.js"></script>
+  <script src="/static/js/reports.js"></script>
+  <script src="/static/js/settings.js"></script>
+  <script src="/static/js/app.js"></script>
+</body>
+</html>
